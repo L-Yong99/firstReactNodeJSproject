@@ -1,4 +1,4 @@
-const log = require('./logger.js');
+const log = require('./logger_export.js');
 // for exporting private scoped into global (here)
 
 
