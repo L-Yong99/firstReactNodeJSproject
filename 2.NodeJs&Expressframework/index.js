@@ -1,5 +1,9 @@
+const Joi = require('joi');
 const express = require('express');
 const app = express();
+
+app.use(express.json());
+// to parse body into json^
 
 const courses = [
   { id: 1, name: 'course 1' },
@@ -9,7 +13,6 @@ const courses = [
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
-
 });
 
 
@@ -25,6 +28,27 @@ app.get('/api/courses/:id', (req, res) => {
   // restful to indicate error 404 for non existent item
   res.send(course);
 
+});
+
+app.post('/api/courses', (req, res) => {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required()
+  });
+
+  const validation = schema.validate(req.body);
+
+  if (validation.error) {
+    res.status(400).send(validation.error.details[0].message);
+    return;
+  }
+
+  const course = {
+    id: courses.length + 1,
+    name: req.body.name
+    // in order for this to work, require enable json parsing for body^
+  };
+  courses.push(course);
+  res.send(course);
 });
 
 // proper way to setup port
